@@ -10,41 +10,53 @@
     "Other"
   ],
   "activationEvents": [
-        "onCommand:pipeline-editor.helloWorld"
+    "onCommand:reactPanel.start",
+    "onCommand:reactPanel.postMessage",
+    "onWebviewPanel:reactPanel"
   ],
   "browser": "./dist/web/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "pipeline-editor.helloWorld",
-        "title": "Hello World"
+        "command": "reactPanel.start",
+        "title": "Open the React app panel",
+        "category": "React webview"
+      },
+      {
+        "command": "reactPanel.postMessage",
+        "title": "Send some message to the app",
+        "category": "React webview"
       }
     ]
   },
   "scripts": {
+    "build-react-app": "cd ../app/ && cross-env-shell PUBLIC_URL=./ BUILD_PATH=$INIT_CWD/build INLINE_RUNTIME_CHUNK=false npm run build",
     "test": "vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --extensionTestsPath=dist/web/test/suite/index.js",
     "pretest": "npm run compile-web",
     "vscode:prepublish": "npm run package-web",
     "compile-web": "webpack",
     "watch-web": "webpack --watch",
+    "prewatch-web": "npm run build-react-app",
     "package-web": "webpack --mode production --devtool hidden-source-map",
+    "prepackage-web": "npm run build-react-app",
     "lint": "eslint src --ext ts",
     "run-in-browser": "vscode-test-web --browserType=chromium --extensionDevelopmentPath=. ."
   },
   "devDependencies": {
-    "@types/vscode": "^1.66.0",
     "@types/mocha": "^9.1.0",
-    "eslint": "^8.11.0",
+    "@types/vscode": "^1.66.0",
+    "@types/webpack-env": "^1.16.3",
     "@typescript-eslint/eslint-plugin": "^5.16.0",
     "@typescript-eslint/parser": "^5.16.0",
-    "mocha": "^9.2.2",
-    "typescript": "^4.5.5",
     "@vscode/test-web": "^0.0.24",
-    "ts-loader": "^9.2.8",
-    "webpack": "^5.70.0",
-    "webpack-cli": "^4.9.2",
-    "@types/webpack-env": "^1.16.3",
     "assert": "^2.0.0",
-    "process": "^0.11.10"
+    "cross-env": "^7.0.3",
+    "eslint": "^8.11.0",
+    "mocha": "^9.2.2",
+    "process": "^0.11.10",
+    "ts-loader": "^9.2.8",
+    "typescript": "^4.5.5",
+    "webpack": "^5.70.0",
+    "webpack-cli": "^4.9.2"
   }
 }
