@@ -11,3 +11,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* Preventing the: Uncaught Error: The React Flow parent container needs a width and a height to render the graph. */
+html,
+body,
+#root {
+  margin: 0;
+  height: 100%;
+}

@@ -7,13 +7,14 @@
  */
 
 // Settings: Default values and local storage configuration keys
+const publicUrl = process.env.PUBLIC_URL || ".";
 const COMPONENT_LIBRARY_URL_DEFAULT_VALUE =
-  process.env.PUBLIC_URL + "/component_library.yaml";
+publicUrl + "/component_library.yaml";
 const COMPONENT_LIBRARY_URL_LOCAL_STORAGE_KEY =
   "ComponentLibrary/component_library_url";
 
 const PIPELINE_LIBRARY_URL_DEFAULT_VALUE =
-  process.env.PUBLIC_URL + "/pipeline_library.yaml";
+publicUrl + "/pipeline_library.yaml";
 const PIPELINE_LIBRARY_URL_LOCAL_STORAGE_KEY =
   "PipelineLibrary/pipeline_library_url";
 

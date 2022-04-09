@@ -1,12 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+//import App from './App';
+//import PipelineEditorApp from 'pipeline-editor/src/App';
+import PipelineEditorAppVSCode from './pipeline-editor/src/AppVSCode';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    {/* Works */}
+    {/* <App /> */}
+    {/* Works */}
+    {/* <PipelineEditorApp /> */}
+    {/* Works */}
+    <PipelineEditorAppVSCode />
   </React.StrictMode>,
   document.getElementById('root')
 );

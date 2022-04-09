@@ -46,16 +46,16 @@ const Sidebar = ({
 
   // Do not include the DebugScratch in the production build
   let DebugScratchElement = () => null;
-  if (process?.env?.NODE_ENV === "development") {
-    try {
-      const DebugScratch = require("./DebugScratch").default;
-      DebugScratchElement = () =>
-        DebugScratch({
-          componentSpec: componentSpec,
-          setComponentSpec: setComponentSpec,
-        });
-    } catch (e) {}
-  }
+  // if (process?.env?.NODE_ENV === "development") {
+  //   try {
+  //     const DebugScratch = require("./DebugScratch").default;
+  //     DebugScratchElement = () =>
+  //       DebugScratch({
+  //         componentSpec: componentSpec,
+  //         setComponentSpec: setComponentSpec,
+  //       });
+  //   } catch (e) {}
+  // }
 
   return (
     <aside className="nodeList">
