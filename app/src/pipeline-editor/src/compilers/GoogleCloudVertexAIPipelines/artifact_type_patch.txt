@@ -1,0 +1,33 @@
+const typeSpecToVertexArtifactTypeSchema = (
+  typeSpec: TypeSpecType | undefined
+): vertex.ArtifactTypeSchema => {
+  // TODO: Implement better mapping
+  return { schemaTitle: "system.Artifact" };
+  // if (typeSpec === undefined) {
+  //   return { schemaTitle: "system.Artifact" };
+  // }
+  // const typeName =
+  //   typeof typeSpec === "string" ? typeSpec : JSON.stringify(typeSpec);
+
+  // // Schema title must satisfy the following regex: ^[a-z][a-z0-9-_]{2,20}[.][A-Z][a-zA-Z0-9-_]{2,49}$
+  // // We add the "cloud_pipelines." prefix and the remaining part must satisfy the following regex: ^[A-Z][a-zA-Z0-9-_]{2,49}$
+  // function capitalizeFirstLetter(s: string) {
+  //   return s.charAt(0).toUpperCase() + s.slice(1);
+  // }
+  // let sanitizedTypeName = capitalizeFirstLetter(
+  //   typeName.replace(/[^a-zA-Z0-9_-]/g, "-")
+  // ).substring(0, 50);
+  // if (sanitizedTypeName.length < 3) {
+  //   sanitizedTypeName = "Type_" + sanitizedTypeName;
+  // }
+  // const artifactTypeSchema: vertex.ArtifactTypeSchema = {
+  //   //schemaTitle: "system.Artifact",
+  //   //schemaTitle: typeName,  // Error: com.google.cloud.ai.platform.common.errors.AiPlatformException: code=NOT_FOUND, message=MetadataSchema not found., cause=null
+  //   //instanceSchema: "title: " + typeName,  // Cannot do {instanceSchema: "title: system.Artifact"}: Error: com.google.cloud.ai.platform.common.errors.AiPlatformException: code=INVALID_ARGUMENT, message=Namespace system cannot be used for custom MetadataSchema, cause=null
+  //   //instanceSchema: "title: " + typeName,  // Error: com.google.cloud.ai.platform.common.errors.AiPlatformException: code=INVALID_ARGUMENT, message=MetadataSchema must include a schema title that satisfies the following regex: ^[a-z][a-z0-9-_]{2,20}[.][A-Z][a-zA-Z0-9-_]{2,49}$, cause=null
+  //   //instanceSchema: "title: " + sanitizedTypeName,  // Error: com.google.cloud.ai.platform.common.errors.AiPlatformException: code=INVALID_ARGUMENT, message=MetadataSchema must include a schema title that satisfies the following regex: ^[a-z][a-z0-9-_]{2,20}[.][A-Z][a-zA-Z0-9-_]{2,49}$, cause=null
+  //   //instanceSchema: `title: "cloud_pipelines.${sanitizedTypeName}"`,  // Error: com.google.cloud.ai.platform.common.errors.AiPlatformException: code=INVALID_ARGUMENT, message=Malformed MetadataSchema definition, missing type information for schema object., cause=null
+  //   instanceSchema: `title: "cloud_pipelines.${sanitizedTypeName}"\ntype: object`,
+  // };
+  // return artifactTypeSchema;
+};

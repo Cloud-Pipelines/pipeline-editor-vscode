@@ -1,0 +1,31 @@
+const aiplatformCreatePipelineJob = async (
+  projectId: string,
+  region = "us-central1",
+  pipelineJob: Record<string, any>,
+  pipelineJobId?: string
+) => {
+  const oauthToken = await ensureGoogleCloudAuthorizesScopes(
+    ["https://www.googleapis.com/auth/cloud-platform"]
+  );
+  // const response = await gapi.client.request({
+  //   path: `https://${region}-aiplatform.googleapis.com/v1beta1/projects/${projectId}/locations/${region}/pipelineJobs?pipelineJobId=${pipelineJobId}`,
+  //   method: "POST",
+  //   body: JSON.stringify(pipelineJob),
+  // });
+  const pipelineJobsApiUrl = `https://${region}-aiplatform.googleapis.com/v1beta1/projects/${projectId}/locations/${region}/pipelineJobs?pipelineJobId=${pipelineJobId}`;
+  const response = await fetch(
+    pipelineJobsApiUrl,
+    {
+      method: "POST",
+      body: JSON.stringify(pipelineJob),
+      headers: new Headers({
+        Authorization: "Bearer " + oauthToken?.access_token,
+      }),
+    }
+  );
+  (window as any).gtag?.("event", "GoogleCloud_submit_pipeline_job", {
+    result: "succeeded"
+  });
+  return response.json();
+  //return response.result;
+}

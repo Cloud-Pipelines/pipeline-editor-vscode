@@ -1,0 +1,18 @@
+
+interface FileSystem {
+    getData: (path: string) => ArrayBuffer;
+    delete: (path: string) => boolean;
+    exists: (path: string) => boolean;
+    listPaths: () => string[];
+}
+
+interface FileInfo {
+    path: string;
+    creationTimeUtc: Date;
+    lastWriteTimeUtc: Date;
+    data: ArrayBuffer;
+}
+
+class IndexedDbFileSystem {
+
+}
