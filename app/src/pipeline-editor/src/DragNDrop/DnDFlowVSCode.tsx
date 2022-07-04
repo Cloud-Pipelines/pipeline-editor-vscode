@@ -6,25 +6,34 @@
  * @copyright 2021 Alexey Volkov <alexey.volkov+oss@ark-kun.com>
  */
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from "react";
 import {
   ReactFlowProvider,
   Controls,
   Background,
   MiniMap,
-  Node,
+  //Node,
   useStoreState,
-} from 'react-flow-renderer';
-import yaml from "js-yaml";
+} from "react-flow-renderer";
+//import yaml from "js-yaml";
 
-import { ComponentSpec } from '../componentSpec';
-import { componentSpecToYaml } from '../componentStore';
-import GraphComponentSpecFlow, { augmentComponentSpec } from './GraphComponentSpecFlow';
+import { ComponentSpec } from "../componentSpec";
+// import {
+//   componentSpecToYaml,
+//   loadComponentAsRefFromText,
+// } from "../componentStore";
+import GraphComponentSpecFlow, {
+  augmentComponentSpec,
+} from "./GraphComponentSpecFlow";
 // import Sidebar from './Sidebar';
-// import { getAppSettings } from '../appSettings';
+import Sidebar from './SidebarVSCode';
+import { getAppSettings } from '../appSettings';
 // import { loadComponentFromUrl } from "./samplePipelines";
 
-import './dnd.css';
+import "./dnd.css";
+//import { CompareArrowsOutlined } from "@material-ui/icons";
+// import { preloadComponentReferences } from "./samplePipelines";
+import VSCodeDocumentConnector from "./VSCodeDocumentConnector";
 
 const GRID_SIZE = 10;
 // const SAVED_COMPONENT_SPEC_KEY = "autosaved.component.yaml";
@@ -95,60 +104,77 @@ const EMPTY_GRAPH_COMPONENT_SPEC: ComponentSpec = {
   },
 };
 
-const DnDFlow = () => {
-  //const [componentSpec, setComponentSpec] = useState<ComponentSpec | undefined>();
-  const [componentSpec, setComponentSpec] = useState<ComponentSpec | undefined>(EMPTY_GRAPH_COMPONENT_SPEC);
-  // const [appSettings] = useState(getAppSettings());
+type ComponentSpecPositionAugmenterProps = {
+  componentSpec: ComponentSpec;
+  setAugmentedComponentSpec: (componentSpec: ComponentSpec) => void;
+};
 
-  // useEffect(() => {
-  //   (async () => {
-  //     const restoredComponentSpec = loadComponentSpec();
-  //     if (restoredComponentSpec !== undefined) {
-  //       setComponentSpec(restoredComponentSpec);
-  //       return;
-  //     }
-  //     const defaultPipelineUrl = appSettings.defaultPipelineUrl;
-  //     try {
-  //       const defaultPipelineSpec = await loadComponentFromUrl(
-  //         defaultPipelineUrl
-  //       );
-  //       setComponentSpec(defaultPipelineSpec);
-  //     } catch (err) {
-  //       console.error(
-  //         `Failed to load the default pipeline from ${defaultPipelineUrl}`
-  //       );
-  //       console.error(err);
-  //       setComponentSpec(EMPTY_GRAPH_COMPONENT_SPEC);
-  //     }
-  //   })();
-  // }, [appSettings.defaultPipelineUrl]);
-
-  if (componentSpec === undefined) {
-    return (<></>);
+const ComponentSpecPositionAugmenter = ({
+  componentSpec,
+  setAugmentedComponentSpec,
+}: ComponentSpecPositionAugmenterProps) => {
+  const nodes = useStoreState((store) => store.nodes);
+  try {
+    const includeComponentSpecs = false;
+    const augmentedComponentSpec = augmentComponentSpec(
+      componentSpec,
+      nodes,
+      includeComponentSpecs,
+      true
+    );
+    setAugmentedComponentSpec(augmentedComponentSpec);
+    //    const componentText = componentSpecToYaml(graphComponent);
+  } catch (err: any) {
+    // TODO: Find a way to avoid the React/Redux race conditions causing this error.
+    if (err?.message?.startsWith("The nodes array does not") !== true) {
+      console.error(err);
+    }
   }
+  return null;
+};
+
+const DnDFlow = () => {
+  const [componentSpec, setComponentSpec] = useState<
+    ComponentSpec | undefined
+  >();
+  console.debug("DnDFlow. Render");
+  useEffect(() => {
+    console.debug("DnDFlow. First time render");
+  }, []);
 
   return (
-    <div className="dndflow">
+    <div className="dndflow" style={{backgroundColor: "white", color: "black"}}>
       <ReactFlowProvider>
         <div className="reactflow-wrapper">
-          <GraphComponentSpecFlow
+          {componentSpec && (
+            <GraphComponentSpecFlow
+              componentSpec={componentSpec}
+              setComponentSpec={setComponentSpec}
+              deleteKeyCode={isAppleOS() ? "Backspace" : "Delete"}
+              multiSelectionKeyCode={isAppleOS() ? "Command" : "Control"}
+              snapToGrid={true}
+              snapGrid={[GRID_SIZE, GRID_SIZE]}
+            >
+              {/* <MiniMap /> */}
+              <Controls />
+              <Background gap={GRID_SIZE} />
+            </GraphComponentSpecFlow>
+          )}
+          {/* <ComponentSpecPositionAugmenter
             componentSpec={componentSpec}
-            setComponentSpec={setComponentSpec}
-            deleteKeyCode={isAppleOS() ? "Backspace" : "Delete"}
-            multiSelectionKeyCode={isAppleOS() ? "Command" : "Control"}
-            snapToGrid={true}
-            snapGrid={[GRID_SIZE, GRID_SIZE]}
-          >
-            <MiniMap/>
-            <Controls />
-            <Background gap={GRID_SIZE}/>
-          </GraphComponentSpecFlow>
+            setAugmentedComponentSpec={handleAugmentedComponentSpecChange}
+          /> */}
+          <VSCodeDocumentConnector
+            pipelineSpec={componentSpec}
+            setPipelineSpec={setComponentSpec}
+          />
+          {/* <ReactBugTest/> */}
         </div>
-        {/* <Sidebar
+        <Sidebar
           componentSpec={componentSpec}
           setComponentSpec={setComponentSpec}
-          appSettings={appSettings}
-        /> */}
+          appSettings={getAppSettings()}
+        />
         {/* <ComponentSpecAutoSaver componentSpec={componentSpec}/> */}
       </ReactFlowProvider>
     </div>
@@ -156,3 +182,32 @@ const DnDFlow = () => {
 };
 
 export default DnDFlow;
+
+// const ReactBugTest = () => {
+//   const [, setValue] = useState(1);
+
+//   useEffect(() => {
+//     const nonce = getNonce();
+//     setValue((currentValue) => {
+//       const newValue = currentValue + 1;
+//       console.log(`ReactBugTest ${nonce}: 1 Current value is ${currentValue}, new value is ${newValue}`)
+//       return newValue;
+//     });
+//     setValue((currentValue) => {
+//       const newValue = currentValue + 1;
+//       console.log(`ReactBugTest ${nonce}: 2 Current value is ${currentValue}, new value is ${newValue}`)
+//       return newValue;
+//     });
+//   });
+//   return null;
+// };
+
+// function getNonce() {
+//   let text = "";
+//   const possible =
+//     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+//   for (let i = 0; i < 32; i++) {
+//     text += possible.charAt(Math.floor(Math.random() * possible.length));
+//   }
+//   return text;
+// }

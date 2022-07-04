@@ -1,65 +1,33 @@
-# pipeline-editor README
+# Cloud Pipelines Editor
 
-This is the README for your extension "pipeline-editor". After writing up a brief description, we recommend including the following sections.
+Cloud Pipelines Editor is a web app that allows the users to build and run Machine Learning pipelines using drag and drop without having to set up development environment.
 
-## Features
+## Video
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+Please take a look at the short video demonstrating the visual pipeline editor.
 
-For example if there is an image subfolder under your extension project workspace:
+[Cloud Pipelines - Build machine learning pipelines without writing code](https://www.youtube.com/watch?v=7g22nupCDes)
+[![image](https://user-images.githubusercontent.com/1829149/127566707-fceb9e41-1126-4588-b94a-c69e87fe0488.png)](https://www.youtube.com/watch?v=7g22nupCDes)
 
-\!\[feature X\]\(images/feature-x.png\)
+## Demo
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+[Demo](https://cloud-pipelines.net/pipeline-editor)
 
-## Requirements
+The early alpha version of the Cloud Pipelines Editor app shown in this video is now available at <https://cloud-pipelines.net/pipeline-editor> . The app is open and standalone. No registration is required.
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+Please check it out and report any bugs you find using [GitHub Issues](https://github.com/Cloud-Pipelines/pipeline-editor/issues).
 
-## Extension Settings
+The app is under active development, so expect some breakages as I work on the app and do not rely on the app for production.
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+App features:
 
-For example:
+* Build pipeline using drag and drop
+* Edit component arguments
+* Submit the pipeline to [Google Cloud Vertex Pipelines](https://cloud.google.com/vertex-ai/docs/pipelines/) for execution.
+* Fully compatible with the Kubeflow Pipelines' components (`component.yaml` files) You can find some components here: [Ark-kun/pipeline_components](https://github.com/Ark-kun/pipeline_components/tree/master/components) or [kubeflow/pipelines/components](https://github.com/kubeflow/pipelines/tree/master/components#index-of-components)
+* Preloaded component library
+* User component library (add private components)
+* Component search
+* Import and export pipelines
 
-This extension contributes the following settings:
-
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
------------------------------------------------------------------------------------------------------------
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (macOS) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+There are many features that I want to add, but I want to prioritize them based on your feedback.

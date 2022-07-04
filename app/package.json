@@ -25,11 +25,14 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-app-rewired start",
-    "build": "react-app-rewired build",
+    "startRewired": "react-app-rewired start",
+    "start": "react-scripts start",
+    "buildRewired": "react-app-rewired build",
+    "build": "react-scripts build",
     "watch": "node scripts/watch.js",
     "watch2": "node scripts/watch2.js",
-    "test": "react-app-rewired test",
+    "testRewired": "react-app-rewired test",
+    "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

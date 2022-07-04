@@ -7,7 +7,9 @@
  */
 
 // Settings: Default values and local storage configuration keys
-const publicUrl = process.env.PUBLIC_URL || ".";
+//const publicUrl = process.env.PUBLIC_URL || "https://cloud-pipelines.net/pipeline-editor/";
+//process.env.PUBLIC_URL === "." in prod
+const publicUrl = "https://cloud-pipelines.net/pipeline-editor";
 const COMPONENT_LIBRARY_URL_DEFAULT_VALUE =
 publicUrl + "/component_library.yaml";
 const COMPONENT_LIBRARY_URL_LOCAL_STORAGE_KEY =
