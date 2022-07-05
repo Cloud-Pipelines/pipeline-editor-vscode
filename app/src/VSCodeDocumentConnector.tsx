@@ -9,14 +9,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useStoreState } from "react-flow-renderer";
 
-import { ComponentSpec, isGraphImplementation } from "../componentSpec";
+import { ComponentSpec, isGraphImplementation } from "./pipeline-editor/src/componentSpec";
 import {
   componentSpecToYaml,
   loadComponentAsRefFromText,
-} from "../componentStore";
-import { augmentComponentSpec } from "./GraphComponentSpecFlow";
+} from "./pipeline-editor/src/componentStore";
+import { augmentComponentSpec } from "./pipeline-editor/src/DragNDrop/GraphComponentSpecFlow";
 
-import { preloadComponentReferences } from "./samplePipelines";
+import { preloadComponentReferences } from "./pipeline-editor/src/DragNDrop/samplePipelines";
 
 // XXX // console.log("window.parent=", window.parent);
 // XXX // console.log("window.top=", window.top);

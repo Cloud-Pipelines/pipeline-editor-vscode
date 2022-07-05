@@ -6,8 +6,8 @@
  * @copyright 2021 Alexey Volkov <alexey.volkov+oss@ark-kun.com>
  */
 
-import './App.css';
-import DnDFlow from './DragNDrop/DnDFlowVSCode';
+import './pipeline-editor/src/App.css';
+import DnDFlow from './DnDFlowVSCode';
 
 function App() {
   return (

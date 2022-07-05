@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 //import App from './App';
 //import PipelineEditorApp from 'pipeline-editor/src/App';
-import PipelineEditorAppVSCode from './pipeline-editor/src/AppVSCode';
+import PipelineEditorAppVSCode from './AppVSCode';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(

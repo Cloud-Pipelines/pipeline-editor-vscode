@@ -8,16 +8,18 @@
 
 import { DragEvent, useState } from 'react';
 
-import ComponentLibrary from './ComponentLibrary'
-import ComponentSearch from './ComponentSearch'
-import GraphComponentExporter from './GraphComponentExporter'
-import VertexAiExporter from './VertexAiExporter'
-import { ComponentSpec } from '../componentSpec';
-import UserComponentLibrary from "./UserComponentLibrary";
-import PipelineLibrary from "./PipelineLibrary";
-import { AppSettings } from '../appSettings';
-import PipelineSubmitter from "./PipelineSubmitter";
-import AppSettingsDialog from './AppSettingsDialog';
+import ComponentLibrary from './pipeline-editor/src/DragNDrop/ComponentLibrary'
+import ComponentSearch from './pipeline-editor/src/DragNDrop/ComponentSearch'
+import GraphComponentExporter from './pipeline-editor/src/DragNDrop/GraphComponentExporter'
+import VertexAiExporter from './pipeline-editor/src/DragNDrop/VertexAiExporter'
+import { ComponentSpec } from './pipeline-editor/src/componentSpec';
+import UserComponentLibrary from "./pipeline-editor/src/DragNDrop/UserComponentLibrary";
+import PipelineLibrary from "./pipeline-editor/src/DragNDrop/PipelineLibrary";
+import { AppSettings } from './pipeline-editor/src/appSettings';
+import PipelineSubmitter from "./pipeline-editor/src/DragNDrop/PipelineSubmitter";
+import AppSettingsDialog from './pipeline-editor/src/DragNDrop/AppSettingsDialog';
+
+import "./pipeline-editor/src/DragNDrop/dnd.css";
 
 const onDragStart = (event: DragEvent, nodeData: object) => {
   event.dataTransfer.setData('application/reactflow', JSON.stringify(nodeData));

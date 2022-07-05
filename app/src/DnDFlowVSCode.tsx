@@ -17,20 +17,20 @@ import {
 } from "react-flow-renderer";
 //import yaml from "js-yaml";
 
-import { ComponentSpec } from "../componentSpec";
+import { ComponentSpec } from "./pipeline-editor/src/componentSpec";
 // import {
 //   componentSpecToYaml,
 //   loadComponentAsRefFromText,
 // } from "../componentStore";
 import GraphComponentSpecFlow, {
   augmentComponentSpec,
-} from "./GraphComponentSpecFlow";
+} from "./pipeline-editor/src/DragNDrop/GraphComponentSpecFlow";
 // import Sidebar from './Sidebar';
 import Sidebar from './SidebarVSCode';
-import { getAppSettings } from '../appSettings';
+import { getAppSettings } from './pipeline-editor/src/appSettings';
 // import { loadComponentFromUrl } from "./samplePipelines";
 
-import "./dnd.css";
+import "./pipeline-editor/src/DragNDrop/dnd.css";
 //import { CompareArrowsOutlined } from "@material-ui/icons";
 // import { preloadComponentReferences } from "./samplePipelines";
 import VSCodeDocumentConnector from "./VSCodeDocumentConnector";
