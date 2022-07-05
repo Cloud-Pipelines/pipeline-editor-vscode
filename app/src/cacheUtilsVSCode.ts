@@ -423,7 +423,7 @@ const IMMUTABLE_URL_REGEXPS = [
   /^https:\/\/gitlab.com\/([-A-Za-z_]+\/){2,}-\/raw\/[0-9a-fA-f]{40}\/.*/,
 ];
 
-async function downloadDataWithVSCodeCache<T>(
+export async function downloadDataWithVSCodeCache<T>(
   url: string,
   transformer: (buffer: ArrayBuffer) => T
 ): Promise<T> {

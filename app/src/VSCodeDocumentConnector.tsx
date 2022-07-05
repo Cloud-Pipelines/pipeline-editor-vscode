@@ -8,15 +8,16 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useStoreState } from "react-flow-renderer";
+import { downloadDataWithVSCodeCache } from "./cacheUtilsVSCode";
+import { DownloadDataType } from "./pipeline-editor/src/cacheUtils";
 
 import { ComponentSpec, isGraphImplementation } from "./pipeline-editor/src/componentSpec";
 import {
   componentSpecToYaml,
   loadComponentAsRefFromText,
+  preloadComponentReferences,
 } from "./pipeline-editor/src/componentStore";
 import { augmentComponentSpec } from "./pipeline-editor/src/DragNDrop/GraphComponentSpecFlow";
-
-import { preloadComponentReferences } from "./pipeline-editor/src/DragNDrop/samplePipelines";
 
 // XXX // console.log("window.parent=", window.parent);
 // XXX // console.log("window.top=", window.top);
@@ -44,11 +45,13 @@ function createEmptyPipelineSpec(name: string = "Pipeline") {
 type VSCodeDocumentConnectorProps = {
   pipelineSpec?: ComponentSpec;
   setPipelineSpec: (componentSpec: ComponentSpec) => void;
+  downloadData?: DownloadDataType;
 };
 
 const VSCodeDocumentConnector = ({
   pipelineSpec,
   setPipelineSpec,
+  downloadData = downloadDataWithVSCodeCache,
 }: VSCodeDocumentConnectorProps) => {
   // Problem: Original componentSpec vs componentSpec with preloaded task components.
   // Problem: ComponentSpec vs componentSpec "augmented" with positions.
@@ -87,17 +90,22 @@ const VSCodeDocumentConnector = ({
           try {
             const fullyLoadedPipelineSpec =
               componentText === ""
-                // Handling the case where the editor is (explicitly) applied to an empty file.
-                // Handing this case by loading an empty pipeline.
-                ? createEmptyPipelineSpec()
+                ? // Handling the case where the editor is (explicitly) applied to an empty file.
+                  // Handing this case by loading an empty pipeline.
+                  createEmptyPipelineSpec()
                 : await preloadComponentReferences(
                     (
                       await loadComponentAsRefFromText(componentText)
-                    ).componentRef.spec
+                    ).componentRef.spec,
+                    downloadData
                   );
             // Only accepting graph components
-            if (!isGraphImplementation(fullyLoadedPipelineSpec.implementation)) {
-              throw Error("Provided ComponentSpec is not a pipeline (the implementation is not a graph).");
+            if (
+              !isGraphImplementation(fullyLoadedPipelineSpec.implementation)
+            ) {
+              throw Error(
+                "Provided ComponentSpec is not a pipeline (the implementation is not a graph)."
+              );
             }
             // The message only arrives once when the document is opened.
             // But the WebView panel is reopened every time it gains focus.
@@ -115,12 +123,15 @@ const VSCodeDocumentConnector = ({
             // lastSentPipelineTextRef.current = componentText;
           } catch (err: any) {
             // TODO: Show error to the user.
-            console.error(`VSCodeDocumentConnector.onWatchEventHandler: Error loading the component spec passed from VSCode using a ${messageType} message. Error:`, err);
+            console.error(
+              `VSCodeDocumentConnector.onWatchEventHandler: Error loading the component spec passed from VSCode using a ${messageType} message. Error:`,
+              err
+            );
             // Sending the error to VSCode so that it reloads the file in text mode.
             vscode.postMessage({
               type: "VSCodeDocumentConnector:InvalidDocumentPassedFromVSCode",
               data: {
-                error: err
+                error: err,
               },
             });
           }

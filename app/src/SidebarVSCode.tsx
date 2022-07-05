@@ -18,6 +18,7 @@ import PipelineLibrary from "./pipeline-editor/src/DragNDrop/PipelineLibrary";
 import { AppSettings } from './pipeline-editor/src/appSettings';
 import PipelineSubmitter from "./pipeline-editor/src/DragNDrop/PipelineSubmitter";
 import AppSettingsDialog from './pipeline-editor/src/DragNDrop/AppSettingsDialog';
+import { DownloadDataType, downloadDataWithCache } from './pipeline-editor/src/cacheUtils';
 
 import "./pipeline-editor/src/DragNDrop/dnd.css";
 
@@ -37,27 +38,32 @@ interface SidebarProps {
   componentSpec?: ComponentSpec,
   setComponentSpec?: (componentSpec: ComponentSpec) => void,
   appSettings: AppSettings;
+  downloadData: DownloadDataType;
 }
 
 const Sidebar = ({
   componentSpec,
   setComponentSpec,
-  appSettings
+  appSettings,
+  downloadData = downloadDataWithCache
 }: SidebarProps) => {
   const [isSettingsDialogOpen, setIsSettingsDialogOpen] = useState(false);
 
   // Do not include the DebugScratch in the production build
   let DebugScratchElement = () => null;
-  // if (process?.env?.NODE_ENV === "development") {
-  //   try {
-  //     const DebugScratch = require("./DebugScratch").default;
-  //     DebugScratchElement = () =>
-  //       DebugScratch({
-  //         componentSpec: componentSpec,
-  //         setComponentSpec: setComponentSpec,
-  //       });
-  //   } catch (e) {}
-  // }
+  /*
+  if (process?.env?.NODE_ENV === "development") {
+    try {
+      const DebugScratch = require("./DebugScratch").default;
+      DebugScratchElement = () =>
+        DebugScratch({
+          componentSpec: componentSpec,
+          setComponentSpec: setComponentSpec,
+          downloadData: downloadData,
+        });
+    } catch (e) {}
+  }
+  */
 
   return (
     <aside className="nodeList">
@@ -67,6 +73,7 @@ const Sidebar = ({
           componentSpec={componentSpec}
           setComponentSpec={setComponentSpec}
           samplePipelineLibraryUrl={appSettings.pipelineLibraryUrl}
+          downloadData={downloadData}
         />
       </details>
       <details style={{ border: "1px solid #aaa", borderRadius: "4px", padding: "4px" }}>
@@ -86,7 +93,10 @@ const Sidebar = ({
           Output
         </div>
       </details>
-      <ComponentLibrary url={appSettings.componentLibraryUrl} />
+      <ComponentLibrary
+        url={appSettings.componentLibraryUrl}
+        downloadData={downloadData}
+      />
       {/* <details style={{ border: "1px solid #aaa", borderRadius: "4px", padding: "4px" }}>
         <summary style={{ borderWidth: "1px", padding: "4px", fontWeight: "bold" }}>User components</summary>
         <UserComponentLibrary/>
@@ -96,6 +106,7 @@ const Sidebar = ({
         <ComponentSearch
           componentFeedUrls={appSettings.componentFeedUrls}
           gitHubSearchLocations={appSettings.gitHubSearchLocations}
+          downloadData={downloadData}
         />
       </details> */}
       {/* Unmounting the dialog control to reset the state when closed. */}

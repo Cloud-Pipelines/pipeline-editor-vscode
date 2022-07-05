@@ -34,6 +34,7 @@ import "./pipeline-editor/src/DragNDrop/dnd.css";
 //import { CompareArrowsOutlined } from "@material-ui/icons";
 // import { preloadComponentReferences } from "./samplePipelines";
 import VSCodeDocumentConnector from "./VSCodeDocumentConnector";
+import { downloadDataWithVSCodeCache } from "./cacheUtilsVSCode";
 
 const GRID_SIZE = 10;
 // const SAVED_COMPONENT_SPEC_KEY = "autosaved.component.yaml";
@@ -142,6 +143,8 @@ const DnDFlow = () => {
     console.debug("DnDFlow. First time render");
   }, []);
 
+  const downloadData = downloadDataWithVSCodeCache;
+
   return (
     <div className="dndflow" style={{backgroundColor: "white", color: "black"}}>
       <ReactFlowProvider>
@@ -167,6 +170,7 @@ const DnDFlow = () => {
           <VSCodeDocumentConnector
             pipelineSpec={componentSpec}
             setPipelineSpec={setComponentSpec}
+            downloadData={downloadData}
           />
           {/* <ReactBugTest/> */}
         </div>
@@ -174,6 +178,7 @@ const DnDFlow = () => {
           componentSpec={componentSpec}
           setComponentSpec={setComponentSpec}
           appSettings={getAppSettings()}
+          downloadData={downloadData}
         />
         {/* <ComponentSpecAutoSaver componentSpec={componentSpec}/> */}
       </ReactFlowProvider>
