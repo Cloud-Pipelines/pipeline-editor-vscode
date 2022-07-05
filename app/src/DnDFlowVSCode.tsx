@@ -27,7 +27,7 @@ import GraphComponentSpecFlow, {
 } from "./pipeline-editor/src/DragNDrop/GraphComponentSpecFlow";
 // import Sidebar from './Sidebar';
 import Sidebar from './SidebarVSCode';
-import { getAppSettings } from './pipeline-editor/src/appSettings';
+import { getAppSettings } from './appSettingsVSCode';
 // import { loadComponentFromUrl } from "./samplePipelines";
 
 import "./pipeline-editor/src/DragNDrop/dnd.css";
