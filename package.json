@@ -76,8 +76,8 @@
     ]
   },
   "scripts": {
-    "build-react-app": "cd ../app/ && cross-env-shell PUBLIC_URL=./ BUILD_PATH=$INIT_CWD/build INLINE_RUNTIME_CHUNK=false npm run build",
-    "watch-react-app": "cd ../app/ && cross-env-shell PUBLIC_URL=./ BUILD_PATH=$INIT_CWD/build INLINE_RUNTIME_CHUNK=false npm run watch",
+    "build-react-app": "cd ./app/ && cross-env-shell PUBLIC_URL=./ BUILD_PATH=$INIT_CWD/build INLINE_RUNTIME_CHUNK=false npm run build",
+    "watch-react-app": "cd ./app/ && cross-env-shell PUBLIC_URL=./ BUILD_PATH=$INIT_CWD/build INLINE_RUNTIME_CHUNK=false npm run watch",
     "test": "vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --extensionTestsPath=dist/web/test/suite/index.js",
     "pretest": "npm run compile-web",
     "vscode:prepublish": "npm run package-web",
