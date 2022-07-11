@@ -29,13 +29,13 @@ The app is under active development, so expect some breakages as I work on the a
 App features:
 
 * Build pipeline using drag and drop
-* Edit component arguments
+* Edit component arguments (double-click in the task nodes)
 * Fully compatible with the Kubeflow Pipelines' components (`component.yaml` files) You can find some components here: [Ark-kun/pipeline_components](https://github.com/Ark-kun/pipeline_components/tree/master/components) or [kubeflow/pipelines/components](https://github.com/kubeflow/pipelines/tree/6ccf5bcd0b9db955c91caab85fa130714527f414/components#index-of-components)
-* Preloaded component library
-* [Web app only] Submit the pipeline to [Google Cloud Vertex Pipelines](https://cloud.google.com/vertex-ai/docs/pipelines/) for execution.
-* [Web app only] Submit the pipeline to [Kubeflow Pipelines](https://www.kubeflow.org/docs/components/pipelines/introduction/) for execution (local on-prem cluster or cloud).
-* [Web app only] User component library (add private components)
-* [Web app only] Component search
-* [Web app only] Import and export pipelines
+* Preloaded component library with 70+ ML-related components
+* [Only works in the web app right now] Submit the pipeline to [Google Cloud Vertex Pipelines](https://cloud.google.com/vertex-ai/docs/pipelines/) for execution.
+* [Only works in the web app right now] Submit the pipeline to [Kubeflow Pipelines](https://www.kubeflow.org/docs/components/pipelines/introduction/) for execution (local on-prem cluster or cloud).
+* [Only works in the web app right now] User component library (add private components)
+* [Only works in the web app right now] Component search
+* [Only works in the web app right now] Import and export pipelines
 
 There are many features that I want to add, but I want to prioritize them based on your feedback.
