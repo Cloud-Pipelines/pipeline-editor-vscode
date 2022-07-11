@@ -56,10 +56,16 @@ export class PipelineEditorProvider implements vscode.CustomTextEditorProvider {
       //   "default",
       //   webviewPanel.viewColumn
       // );
-      vscode.commands.executeCommand('workbench.action.reopenWithEditor',
-        document.uri,
-        "default"
-        //'cloudPipelines.pipelineEditor'
+      // No longer works in VSCode 1.68
+      // vscode.commands.executeCommand('workbench.action.reopenWithEditor',
+      //   document.uri,
+      //   "default"
+      //   //'cloudPipelines.pipelineEditor'
+      // );
+      // Works
+      vscode.commands.executeCommand(
+        "workbench.action.toggleEditorType",
+        document.uri
       );
       // Not loading HTML into the webview
       return;
@@ -165,19 +171,9 @@ export class PipelineEditorProvider implements vscode.CustomTextEditorProvider {
             "The document is not a valid pipeline (graph component spec)." + " " + "Please file a bug report: https://github.com/Cloud-Pipelines/pipeline-editor/issues"
             // items: A set of items that will be rendered as actions in the message.
           );
-          //await vscode.workspace.openTextDocument(document.uri);
-          vscode.commands.executeCommand(
-            "vscode.openWith",
+          vscode.commands.executeCommand('workbench.action.toggleEditorType',
             document.uri,
-            "default"
-            //'cloudPipelines.pipelineEditor'
           );
-          // vscode.commands.executeCommand('workbench.action.reopenWithEditor',
-          //   document.uri,
-          //   "default"
-          //   //'cloudPipelines.pipelineEditor'
-          // );
-
           break;
         case "rpc":
           const messageId = e.data.messageId;
