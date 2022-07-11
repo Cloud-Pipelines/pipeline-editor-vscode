@@ -1,7 +1,7 @@
 {
   "name": "pipeline-editor-vscode",
   "displayName": "Pipeline Editor",
-  "version": "0.1.20220522",
+  "version": "0.1.20220710",
   "description": "Cloud Pipelines Editor is a web app that allows the users to build and run Machine Learning pipelines using drag and drop without having to set up development environment.",
   "keywords": [
     "Data Science",
@@ -63,13 +63,13 @@
         "displayName": "Cloud Pipeline Editor",
         "selector": [
           {
-            "filenamePattern": "*.component.{yaml,yml}"
+            "filenamePattern": "*.component.{yaml,yml,yaml.yml}"
           },
           {
-            "filenamePattern": "{*.,}component.{yaml,yml}"
+            "filenamePattern": "{*.,}component.{yaml,yml,yaml.yml}"
           },
           {
-            "filenamePattern": "{*.,}pipeline_component.{yaml,yml}"
+            "filenamePattern": "{*.,}pipeline_component.{yaml,yml,yaml.yml}"
           }
         ]
       }
