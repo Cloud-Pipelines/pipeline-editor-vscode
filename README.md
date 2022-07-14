@@ -7,7 +7,7 @@ The [Cloud Pipelines Editor VSCode extension](https://marketplace.visualstudio.c
 Open the `File/New File...` menu and choose `Pipeline` to create a new pipeline.
 Or click on any `*.pipeline.component.yaml` file to open it in the Pipeline Editor.
 
-![image](https://user-images.githubusercontent.com/1829149/177463759-4c6efaee-12a8-4905-9c52-e2c3f3646bc3.png)
+![image](https://user-images.githubusercontent.com/1829149/178237205-29e0d3be-cc6d-4fe3-b963-b771729c6a05.png)
 
 ## Video
 
