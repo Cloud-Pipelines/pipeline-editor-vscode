@@ -19,10 +19,6 @@ import {
 } from "./pipeline-editor/src/componentStore";
 import { augmentComponentSpec } from "./pipeline-editor/src/DragNDrop/GraphComponentSpecFlow";
 
-// XXX // console.log("window.parent=", window.parent);
-// XXX // console.log("window.top=", window.top);
-// XXX // console.log("window.frameElement=", window.frameElement);
-
 // @ts-ignore
 const vscode = acquireVsCodeApi();
 // @ts-ignore
@@ -65,11 +61,7 @@ const VSCodeDocumentConnector = ({
   // Solution: Or we can start with just removing spec when url is present.
 
   const nodes = useStoreState((store) => store.nodes);
-  // const lastReceivedPipelineTextRef = useRef<string>();
-  // const lastSentPipelineTextRef = useRef<string>();
   const vscodePipelineTextRef = useRef<string>();
-  // const [pipelineText, setPipelineText] = useState<string>();
-  // const [vscodePipelineText, setVscodePipelineText] = useState<string>();
 
   console.debug("VSCodeDocumentConnector");
 
@@ -267,56 +259,9 @@ const VSCodeDocumentConnector = ({
           componentSpecWithPositionsAndSpecs,
       });
       // Send new document text to VSCode
-      // TODO: Will this trigger infinite change loop?
-      // console.debug(
-      //   "VSCodeDocumentConnector. ComponentSpec or nodes have changed - doing setPipelineTextForSaving"
-      // );
       const newPipelineTextForSaving = componentSpecToYaml(
         componentSpecWithPositionsAndWithoutSpecs
       );
-      // Setting the state instead of sending the message here to deduplicate.
-      // Option 1
-      // vscode.postMessage({
-      //   type: "VSCodeDocumentConnector:ComponentSpecChanged",
-      //   data: componentTextForSaving,
-      // });
-      // Option 2
-      //setVscodePipelineText(newPipelineTextForSaving);
-      // Option 3
-      // Has echo for some reason despite `if (newPipelineTextForSaving !== currentVscodePipelineText) {`.
-      // Causes " WARN IGNORING workspace edit Error: file:///a%3A/_All/...../pipeline2.component.yaml has changed in the meantime"
-      // setVscodePipelineText(currentVscodePipelineText => {
-      //   const nonce2 = getNonce();
-      //   if (newPipelineTextForSaving !== currentVscodePipelineText) {
-      //     console.debug(
-      //       "VSCodeDocumentConnector. pipelineTextForSaving has changed - doing vscode.postMessage." + " " + nonce + " " + nonce2 + ` Current=${hashCode(currentVscodePipelineText || "")}; new=${hashCode(newPipelineTextForSaving)}`
-      //     );
-
-      //     // vscode.postMessage({
-      //     //   type: "VSCodeDocumentConnector:ComponentSpecChanged",
-      //     //   data: newPipelineTextForSaving,
-      //     // });
-      //   } else {
-      //     // XXX
-      //     console.debug(
-      //       "VSCodeDocumentConnector. pipelineTextForSaving has not changed." + " " + nonce + " " + nonce2 + ` Current=${hashCode(currentVscodePipelineText || "")}`
-      //     );
-      //   }
-      //   return newPipelineTextForSaving;
-      // });
-      // Option 4:
-      // if (compareStringsWithNormalizedLineEndings(newPipelineTextForSaving, lastReceivedPipelineTextRef.current)) {
-      //   console.debug(
-      //     "VSCodeDocumentConnector. Pipeline text is the same as the one we received from VSCode. Skipping."
-      //   );
-      //   return;
-      // }
-      // if (compareStringsWithNormalizedLineEndings(newPipelineTextForSaving, lastSentPipelineTextRef.current)) {
-      //   console.debug(
-      //     "VSCodeDocumentConnector. Pipeline text is the same as the one we sent to VSCode. Skipping."
-      //   );
-      //   return;
-      // }
       if (
         compareStringsWithNormalizedLineEndings(
           newPipelineTextForSaving,
@@ -349,19 +294,6 @@ const VSCodeDocumentConnector = ({
     }
   }, [pipelineSpec, nodes]);
 
-  // // Sending the updated pipeline text to VSCode when it changes
-  // useEffect(() => {
-  //   if (vscodePipelineText) {
-  //     console.debug(
-  //       "VSCodeDocumentConnector. componentTextForSaving has changed - doing vscode.postMessage"
-  //     );
-  //     vscode.postMessage({
-  //       type: "VSCodeDocumentConnector:ComponentSpecChanged",
-  //       data: vscodePipelineText,
-  //     });
-  //   }
-  // }, [vscodePipelineText]);
-
   return null;
 };
 
@@ -376,23 +308,3 @@ function compareStringsWithNormalizedLineEndings(s1?: string, s2?: string) {
 }
 
 export default VSCodeDocumentConnector;
-
-// XXX
-
-function getNonce() {
-  let text = "";
-  const possible =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  for (let i = 0; i < 32; i++) {
-    text += possible.charAt(Math.floor(Math.random() * possible.length));
-  }
-  return text;
-}
-
-function hashCode(s: string) {
-  let h = 0;
-  for (let i = 0; i < s.length; i++) {
-    h = (Math.imul(31, h) + s.charCodeAt(i)) | 0;
-  }
-  return h;
-}

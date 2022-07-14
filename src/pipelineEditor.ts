@@ -333,67 +333,6 @@ async function callRpc(
   args: any[]
 ): Promise<any> {
   switch (func) {
-    case "cacheUtils.httpGetWithCache":
-      const [url, cacheName, updateIfInCache] = args as [
-        string,
-        string,
-        string
-      ];
-      const urlHash = await calculateHashDigestHex(url);
-      //TODO: Sanitize cacheName
-      const sanitizedCacheName = cacheName.replace(/[\\\/]/g, "_");
-      const cacheDir = vscode.Uri.joinPath(
-        context.globalStorageUri,
-        "caches",
-        sanitizedCacheName
-      );
-      const keyUri = vscode.Uri.joinPath(cacheDir, urlHash + ".key");
-      const valueUri = vscode.Uri.joinPath(cacheDir, urlHash + ".value");
-      // FIX!: Handle updateIfInCache
-      try {
-        const fileData = await vscode.workspace.fs.readFile(valueUri);
-        // !!! Do not use fileData(Uint8Array).buffer. The data might have non-zero byteOffset!
-        //fileData.length = 2454. fileData.byteOffset = 9. fileData.buffer.byteLength = 2463
-        //console.log(`cacheUtils.httpGetWithCache: Found ${url} in cache. fileData.length = ${fileData.length}. fileData.byteOffset = ${fileData.byteOffset}. fileData.buffer.byteLength = ${fileData.buffer.byteLength}`);
-        return fileData;
-        //return fileData.buffer;
-      } catch {}
-
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error(
-          `Network response was not OK: ${response.status}: ${response.statusText}`
-        );
-      }
-      const blob = await response.blob();
-      const arrayBuffer = await blob.arrayBuffer();
-
-      console.debug(
-        `cacheUtils.httpGetWithCache: Caching ${url} to ${valueUri.fsPath}`
-      );
-
-      // TODO: Support data validation
-      // Caching
-      // TODO: Consider using temporary files.
-      await vscode.workspace.fs.writeFile(
-        valueUri,
-        new Uint8Array(arrayBuffer)
-      );
-      await vscode.workspace.fs.writeFile(
-        keyUri,
-        new TextEncoder().encode(url)
-      );
-
-      //return arrayBuffer;
-      return new Uint8Array(arrayBuffer);
-    case "VSCodeGlobalKeyValueStore:getString": {
-      const [cacheName, key] = args as [string, string];
-      return await storageCacheGetString(context.globalStorageUri, key, cacheName);
-    }
-    case "VSCodeGlobalKeyValueStore:setString": {
-      const [cacheName, key, value] = args as [string, string, string];
-      return await storageCacheSetString(context.globalStorageUri, key, value, cacheName);
-    }
     case "VSCodeGlobalKeyValueStore:getData": {
       const [cacheName, key] = args as [string, string];
       return await storageCacheGetData(context.globalStorageUri, key, cacheName);
@@ -406,30 +345,6 @@ async function callRpc(
       return null;
   }
   return undefined;
-}
-
-async function storageCacheGetString(
-  storageUri: vscode.Uri,
-  key: string,
-  cacheName = "cache"
-) {
-  //TODO: Sanitize cacheName less strictly
-  const sanitizedCacheName = cacheName.replace(/\W/g, "_");
-  const cacheDir = vscode.Uri.joinPath(
-    storageUri,
-    "caches",
-    sanitizedCacheName
-  );
-  // Collisions are rare... (Let's see how well this work)
-  const keyHash = await calculateHashDigestHex(key);
-  const valueUri = vscode.Uri.joinPath(cacheDir, keyHash + ".value");
-  try {
-    const data = await vscode.workspace.fs.readFile(valueUri);
-    const value = new TextDecoder().decode(data);
-    return value;
-  } catch {
-    return undefined;
-  }
 }
 
 async function storageCacheGetData(
@@ -463,32 +378,6 @@ async function storageCacheGetData(
   } catch {
     return undefined;
   }
-}
-
-async function storageCacheSetString(
-  storageUri: vscode.Uri,
-  key: string,
-  value: string,
-  cacheName = "cache"
-) {
-  //TODO: Sanitize cacheName less strictly
-  const sanitizedCacheName = cacheName.replace(/\W/g, "_");
-  const cacheDir = vscode.Uri.joinPath(
-    storageUri,
-    "caches",
-    sanitizedCacheName
-  );
-  // Collisions are rare... (Let's see how well this work)
-  const keyHash = await calculateHashDigestHex(key);
-  const keyUri = vscode.Uri.joinPath(cacheDir, keyHash + ".key");
-  const valueUri = vscode.Uri.joinPath(cacheDir, keyHash + ".value");
-
-  await vscode.workspace.fs.writeFile(
-    valueUri,
-    new TextEncoder().encode(value)
-  );
-  await vscode.workspace.fs.writeFile(keyUri, new TextEncoder().encode(key));
-  return;
 }
 
 async function storageCacheSetData(

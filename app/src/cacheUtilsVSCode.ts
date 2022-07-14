@@ -6,81 +6,6 @@
  * @copyright 2021 Alexey Volkov <alexey.volkov+oss@ark-kun.com>
  */
 
-const httpGetWithCache0 = async (
-  urlOrRequest: string | RequestInfo,
-  cacheName: string,
-  updateIfInCache: boolean = false
-): Promise<Response> => {
-  const cache = await caches.open(cacheName);
-  const response = await cache.match(urlOrRequest);
-  if (response !== undefined) {
-    if (updateIfInCache) {
-      cache.add(urlOrRequest);
-    }
-    return response;
-  }
-  await cache.add(urlOrRequest);
-  const response2 = await cache.match(urlOrRequest);
-  if (response2 === undefined) {
-    return Promise.reject("Added object to cache, but could not find it");
-  }
-  return response2;
-};
-
-// httpGetWithCacheVScode
-const httpGetWithCache1 = async (
-  urlOrRequest: string,
-  cacheName: string,
-  updateIfInCache: boolean = false
-): Promise<Response> => {
-  //console.log("httpGetWithCache(", urlOrRequest, cacheName);
-  // @ts-ignore
-  //const vscodeApi = acquireVsCodeApi();
-  const vscodeApi = window.vscodeApi;
-
-  return new Promise<Response>((resolve, reject) => {
-    const messageId = Math.random();
-    const onWatchEventHandler = async (msg: MessageEvent<any>) => {
-      //console.log("httpGetWithCacheVScode.onWatchEventHandler(", msg);
-      const msgType = msg.data?.type;
-      const msgData = msg.data?.data;
-      if (msgType === "rpcResponse" && msgData?.messageId === messageId) {
-        //if (msgType === "rpcResponse") {
-        window.removeEventListener("message", onWatchEventHandler);
-        //const blobText = msgData?.result as string;
-        //const arrayBuffer = msgData?.result as ArrayBuffer;
-        const arrayBuffer = msgData?.result as Uint8Array;
-        resolve(
-          new Response(
-            //new Blob([blobText], {
-            new Blob([arrayBuffer], {
-              type: "text/plain",
-            })
-          )
-        );
-      }
-    };
-    window.addEventListener("message", onWatchEventHandler);
-    vscodeApi.postMessage({
-      type: "rpc",
-      data: {
-        messageId: messageId,
-        func: "cacheUtils.httpGetWithCache",
-        args: [urlOrRequest, cacheName, updateIfInCache],
-      },
-    });
-  });
-};
-
-// const memoryKeyValueStringStores = new Map<
-//   string,
-//   IAsyncKeyValueStore<string, string>
-// >();
-// const vscodeKeyValueStringStores = new Map<
-//   string,
-//   IAsyncKeyValueStore<string, string>
-// >();
-
 const memoryKeyValueDataStores = new Map<
   string,
   IAsyncKeyValueStore<string, ArrayBuffer>
@@ -89,15 +14,6 @@ const vscodeKeyValueDataStores = new Map<
   string,
   IAsyncKeyValueStore<string, ArrayBuffer>
 >();
-
-// function getOrCreateMemoryKeyValueStringStore(cacheName: string) {
-//   let result = memoryKeyValueStringStores.get(cacheName);
-//   if (result === undefined) {
-//     result = new MemoryKeyValueStore<string, string>();
-//     memoryKeyValueStringStores.set(cacheName, result);
-//   }
-//   return result;
-// }
 
 function getOrCreateMemoryKeyValueDataStore(cacheName: string) {
   let result = memoryKeyValueDataStores.get(cacheName);
@@ -108,15 +24,6 @@ function getOrCreateMemoryKeyValueDataStore(cacheName: string) {
   return result;
 }
 
-// function getOrCreateVscodeKeyValueStringStore(cacheName: string) {
-//   let result = vscodeKeyValueStringStores.get(cacheName);
-//   if (result === undefined) {
-//     result = new VSCodeRpcGlobalKeyValueStringStore(cacheName);
-//     vscodeKeyValueStringStores.set(cacheName, result);
-//   }
-//   return result;
-// }
-
 function getOrCreateVSCodeKeyValueDataStore(cacheName: string) {
   let result = vscodeKeyValueDataStores.get(cacheName);
   if (result === undefined) {
@@ -125,43 +32,6 @@ function getOrCreateVSCodeKeyValueDataStore(cacheName: string) {
   }
   return result;
 }
-
-// const httpGetWithCache2 = async (
-//   urlOrRequest: string,
-//   cacheName: string,
-//   updateIfInCache: boolean = false
-// ): Promise<Response> => {
-//   const caches = [
-//     getOrCreateMemoryKeyValueStringStore(cacheName),
-//     getOrCreateVscodeKeyValueStringStore(cacheName),
-//   ];
-//   const text = await getTextFromUrl(urlOrRequest, caches, updateIfInCache);
-//   return new Response(
-//     new Blob([text], {
-//       type: "text/plain",
-//     })
-//   );
-// };
-
-const httpGetWithCache2Data = async (
-  urlOrRequest: string,
-  cacheName: string,
-  updateIfInCache: boolean = false
-): Promise<Response> => {
-  const caches = [
-    getOrCreateMemoryKeyValueDataStore(cacheName),
-    getOrCreateVSCodeKeyValueDataStore(cacheName),
-  ];
-  const data = await getDataFromUrl(urlOrRequest, caches, updateIfInCache);
-  return new Response(
-    new Blob([data], {
-      type: "text/plain",
-    })
-  );
-};
-
-//export const httpGetWithCache = httpGetWithCache2;
-export const httpGetWithCache = httpGetWithCache2Data;
 
 interface IAsyncKeyValueStore<TKey, TValue> {
   get(key: TKey): Promise<TValue | undefined>;
@@ -216,36 +86,6 @@ async function callVSCodeRpc(func: string, ...args: any[]): Promise<any> {
   });
 }
 
-// class VSCodeRpcGlobalKeyValueStringStore
-//   implements IAsyncKeyValueStore<string, string>
-// {
-//   cacheName: string;
-//   constructor(cacheName: string) {
-//     this.cacheName = cacheName;
-//   }
-//   async get(key: string): Promise<string | undefined> {
-//     const result = await callVSCodeRpc(
-//       "VSCodeGlobalKeyValueStore:getString",
-//       this.cacheName,
-//       key
-//     );
-//     if (typeof result === "string" || result === undefined) {
-//       return result;
-//     }
-//     return Promise.reject(
-//       `Expected result to be string or undefined, but got: ${result}.`
-//     );
-//   }
-//   async set(key: string, value: string) {
-//     await callVSCodeRpc(
-//       "VSCodeGlobalKeyValueStore:setString",
-//       this.cacheName,
-//       key,
-//       value
-//     );
-//   }
-// }
-
 class VSCodeRpcGlobalKeyValueDataStore
   implements IAsyncKeyValueStore<string, ArrayBuffer>
 {
@@ -262,7 +102,10 @@ class VSCodeRpcGlobalKeyValueDataStore
     if (result instanceof ArrayBuffer || result === undefined) {
       return result;
     }
-    console.error("VSCodeRpcGlobalKeyValueDataStore: Expected result to be ArrayBuffer or undefined, but got", result)
+    console.error(
+      "VSCodeRpcGlobalKeyValueDataStore: Expected result to be ArrayBuffer or undefined, but got",
+      result
+    );
     return Promise.reject(
       `Expected result to be ArrayBuffer or undefined, but got ${result}.`
     );
@@ -360,18 +203,6 @@ async function createValueOrGetFromCache<TKey, TValue>(
   }
 }
 
-// async function fetchText(url: string): Promise<string> {
-//   const response = await fetch(url);
-//   if (!response.ok) {
-//     throw new Error(
-//       `Network response was not OK: ${response.status}: ${response.statusText}`
-//     );
-//   }
-//   const data = await response.blob();
-//   const text = data.text();
-//   return text;
-// }
-
 async function fetchData(url: string): Promise<ArrayBuffer> {
   const response = await fetch(url);
   if (!response.ok) {
@@ -381,42 +212,6 @@ async function fetchData(url: string): Promise<ArrayBuffer> {
   }
   return response.arrayBuffer();
 }
-
-// function getTextFromUrl(
-//   url: string,
-//   caches: IAsyncKeyValueStore<string, string>[] = [],
-//   updateIfInCache: boolean = false
-// ): Promise<string> {
-//   return updateIfInCache
-//     ? createValueOrGetFromCache(url, caches, fetchText)
-//     : getValueFromCacheOrCreate(url, caches, fetchText);
-// }
-
-function getDataFromUrl(
-  url: string,
-  caches: IAsyncKeyValueStore<string, ArrayBuffer>[] = [],
-  updateIfInCache: boolean = false
-): Promise<ArrayBuffer> {
-  return updateIfInCache
-    ? createValueOrGetFromCache(url, caches, fetchData)
-    : getValueFromCacheOrCreate(url, caches, fetchData);
-}
-
-// async function fetchComponentTextAndVerify(url: string): Promise<string> {
-//   const text = fetchText(url);
-//   // ! FIX: Verify !
-//   return text;
-// }
-
-// function getComponentTextFromUrl(
-//   url: string,
-//   caches: IAsyncKeyValueStore<string, string>[] = [],
-//   updateIfInCache: boolean = false
-// ) {
-//   return updateIfInCache
-//     ? createValueOrGetFromCache(url, caches, fetchComponentTextAndVerify)
-//     : getValueFromCacheOrCreate(url, caches, fetchComponentTextAndVerify);
-// }
 
 const IMMUTABLE_URL_REGEXPS = [
   /^https:\/\/raw.githubusercontent.com\/[-A-Za-z_]+\/[-A-Za-z_]+\/[0-9a-fA-f]{40}\/.*/,
