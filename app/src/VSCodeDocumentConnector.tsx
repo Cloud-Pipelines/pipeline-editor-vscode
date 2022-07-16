@@ -88,7 +88,7 @@ const VSCodeDocumentConnector = ({
                 : await preloadComponentReferences(
                     (
                       await loadComponentAsRefFromText(componentText)
-                    ).componentRef.spec,
+                    ).spec,
                     downloadData
                   );
             // Only accepting graph components
