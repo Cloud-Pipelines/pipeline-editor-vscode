@@ -34,7 +34,9 @@ export const ComponentLibraryVSCode = ({
       const componentRefs = (
         await Promise.all(
           (await vscodeRpcWorkspaceComponents.keys())
-            .sort()
+            .sort((a, b) =>
+              a.localeCompare(b, undefined, { sensitivity: "base" })
+            )
             .map(async (key) => await vscodeRpcWorkspaceComponents.get(key))
         )
       ).filter(notUndefined);
