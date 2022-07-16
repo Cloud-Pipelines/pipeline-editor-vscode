@@ -138,7 +138,7 @@ const VSCodeDocumentConnector = ({
           break;
       }
     },
-    [setPipelineSpec]
+    [setPipelineSpec, downloadData]
   );
 
   // Case: When VSCode sends updated document text
