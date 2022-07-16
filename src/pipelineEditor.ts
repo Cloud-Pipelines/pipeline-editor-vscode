@@ -345,6 +345,13 @@ async function callRpc(
       const [cacheName] = args as [string];
       return await storageCacheListKeys(context.globalStorageUri, cacheName);
     }
+    case "VSCodeWorkspaceComponents:getComponentRefByUri": {
+      const [uri] = args as [string];
+      return await getWorkspaceComponentFileAsComponentRef(uri);
+    }
+    case "VSCodeWorkspaceComponents:listUris": {
+      return await listWorkspaceComponentFileUris();
+    }
     default:
       return null;
   }
@@ -430,4 +437,24 @@ async function storageCacheListKeys(
     })
   );
   return keys;
+}
+
+async function getWorkspaceComponentFileAsComponentRef(uri: string) {
+  const data = await vscode.workspace.fs.readFile(vscode.Uri.parse(uri));
+  const text = new TextDecoder().decode(data);
+  //TODO: ! Check that this is a valid component file
+  //TODO: Add digest
+  //TODO: Try to get the GIT URI (and check whether the file is dirty)
+  const componentRef = {
+    // We should not set the component reference url to the uri since the URI is local
+    name: uri,
+    text: text,
+  };
+  return componentRef;
+}
+
+async function listWorkspaceComponentFileUris() {
+  const uris = await vscode.workspace.findFiles("**/component.yaml");
+  // TODO: Validate the component files
+  return uris.map((uri) => uri.toString());
 }

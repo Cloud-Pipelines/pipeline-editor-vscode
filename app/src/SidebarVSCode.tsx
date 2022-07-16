@@ -21,6 +21,7 @@ import AppSettingsDialog from './pipeline-editor/src/DragNDrop/AppSettingsDialog
 import { DownloadDataType, downloadDataWithCache } from './pipeline-editor/src/cacheUtils';
 
 import "./pipeline-editor/src/DragNDrop/dnd.css";
+import { ComponentLibraryVSCode } from './ComponentLibraryVSCode';
 
 const onDragStart = (event: DragEvent, nodeData: object) => {
   event.dataTransfer.setData('application/reactflow', JSON.stringify(nodeData));
@@ -97,6 +98,7 @@ const Sidebar = ({
         url={appSettings.componentLibraryUrl}
         downloadData={downloadData}
       />
+      <ComponentLibraryVSCode downloadData={downloadData}/>
       {/* <details style={{ border: "1px solid #aaa", borderRadius: "4px", padding: "4px" }}>
         <summary style={{ borderWidth: "1px", padding: "4px", fontWeight: "bold" }}>User components</summary>
         <UserComponentLibrary/>

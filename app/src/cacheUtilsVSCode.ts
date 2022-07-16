@@ -6,6 +6,8 @@
  * @copyright 2021 Alexey Volkov <alexey.volkov+oss@ark-kun.com>
  */
 
+import { ComponentReference } from "./pipeline-editor/src/componentSpec";
+
 const memoryKeyValueDataStores = new Map<
   string,
   IAsyncKeyValueStore<string, ArrayBuffer>
@@ -262,4 +264,46 @@ export async function downloadDataWithVSCodeCache<T>(
     : await getValueFromCacheOrCreate(url, caches, fetchAndValidateData);
   const transformedData = transformer(data);
   return transformedData;
+}
+
+export const isValidLoadableComponentReference = (
+  obj: any
+): obj is ComponentReference =>
+  typeof obj === "object" && ("url" in obj || "spec" in obj || "text" in obj);
+
+export class VSCodeRpcWorkspaceComponents
+  implements IAsyncKeyValueStore<string, ComponentReference>
+{
+  async get(key: string): Promise<ComponentReference | undefined> {
+    const result = await callVSCodeRpc(
+      "VSCodeWorkspaceComponents:getComponentRefByUri",
+      key
+    );
+    if (isValidLoadableComponentReference(result) || result === undefined) {
+      return result;
+    }
+    console.error(
+      "VSCodeRpcWorkspaceComponents: Expected result to be ComponentReference or undefined, but got",
+      result
+    );
+    return Promise.reject(
+      `Expected result to be ComponentReference or undefined, but got ${result}.`
+    );
+  }
+  async set(key: string, value: ComponentReference) {
+    throw Error("Not implemented");
+  }
+  async keys(): Promise<string[]> {
+    const result = await callVSCodeRpc("VSCodeWorkspaceComponents:listUris");
+    if (Array.isArray(result) && result.every((x) => typeof x === "string")) {
+      return result;
+    }
+    console.error(
+      "VSCodeRpcWorkspaceComponents: Expected the result to be string[], but got",
+      result
+    );
+    return Promise.reject(
+      `Expected the result to be string[], but got ${result}.`
+    );
+  }
 }
