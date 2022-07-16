@@ -341,6 +341,10 @@ async function callRpc(
       const [cacheName, key, value] = args as [string, string, ArrayBuffer];
       return await storageCacheSetData(context.globalStorageUri, key, value, cacheName);
     }
+    case "VSCodeGlobalKeyValueStore:listKeys": {
+      const [cacheName] = args as [string];
+      return await storageCacheListKeys(context.globalStorageUri, cacheName);
+    }
     default:
       return null;
   }
@@ -401,4 +405,29 @@ async function storageCacheSetData(
   await vscode.workspace.fs.writeFile(valueUri, new Uint8Array(value));
   await vscode.workspace.fs.writeFile(keyUri, new TextEncoder().encode(key));
   return;
+}
+
+async function storageCacheListKeys(
+  storageUri: vscode.Uri,
+  cacheName = "cache"
+): Promise<string[]> {
+  //TODO: Sanitize cacheName less strictly
+  const sanitizedCacheName = cacheName.replace(/\W/g, "_");
+  const cacheDir = vscode.Uri.joinPath(
+    storageUri,
+    "caches",
+    sanitizedCacheName
+  );
+  const files = await vscode.workspace.fs.readDirectory(cacheDir);
+  const fileNames = files.map(([name, type]) => name);
+  const keyFileNames = fileNames.filter((name) => name.endsWith(".key"));
+  const keys = await Promise.all(
+    keyFileNames.map(async (keyFileName) => {
+      const keyFileUri = vscode.Uri.joinPath(cacheDir, keyFileName);
+      const keyData = await vscode.workspace.fs.readFile(keyFileUri);
+      const key = new TextDecoder().decode(keyData);
+      return key;
+    })
+  );
+  return keys;
 }

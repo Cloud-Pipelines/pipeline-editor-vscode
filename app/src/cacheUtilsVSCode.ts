@@ -36,6 +36,7 @@ function getOrCreateVSCodeKeyValueDataStore(cacheName: string) {
 interface IAsyncKeyValueStore<TKey, TValue> {
   get(key: TKey): Promise<TValue | undefined>;
   set(key: TKey, value: TValue): Promise<void>;
+  keys(): Promise<TKey[]>;
 }
 
 class MemoryKeyValueStore<TKey, TValue>
@@ -51,6 +52,9 @@ class MemoryKeyValueStore<TKey, TValue>
   set(key: TKey, value: TValue) {
     this.storage.set(key, value);
     return Promise.resolve();
+  }
+  keys() {
+    return Promise.resolve(Array.from(this.storage.keys()));
   }
 }
 
@@ -116,6 +120,22 @@ class VSCodeRpcGlobalKeyValueDataStore
       this.cacheName,
       key,
       value
+    );
+  }
+  async keys(): Promise<string[]> {
+    const result = await callVSCodeRpc(
+      "VSCodeGlobalKeyValueStore:listKeys",
+      this.cacheName
+    );
+    if (Array.isArray(result) && result.every((x) => typeof x === "string")) {
+      return result;
+    }
+    console.error(
+      "VSCodeRpcGlobalKeyValueDataStore: Expected the result to be string[], but got",
+      result
+    );
+    return Promise.reject(
+      `Expected the result to be string[], but got ${result}.`
     );
   }
 }
