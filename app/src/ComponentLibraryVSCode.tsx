@@ -140,7 +140,10 @@ export const ComponentLibraryVSCode = ({
       );
 
       const componentLibraryStruct: ComponentLibraryStruct = {
-        folders: [libraryStructRootFolder],
+        folders:
+          libraryStructRootFolder.components.length > 0
+            ? [libraryStructRootFolder]
+            : libraryStructRootFolder.folders,
       };
       setComponentLibraryStruct(componentLibraryStruct);
     })();
