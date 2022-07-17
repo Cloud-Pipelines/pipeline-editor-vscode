@@ -124,6 +124,10 @@ export const ComponentLibraryVSCode = ({
           const pathParts = componentRef.name.split(/[/\\]/g);
           // Removing the last part which is "component.yaml"
           pathParts.pop();
+          // Removing the last directory part - each component.yaml is in separate directory
+          if (pathParts) {
+            pathParts.pop();
+          }
           addComponentToDeepFolder(rootFolder, componentRef, pathParts);
         }
       }
