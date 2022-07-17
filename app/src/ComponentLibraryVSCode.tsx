@@ -17,6 +17,7 @@ import {
   ComponentLibraryFolder,
   ComponentLibraryStruct,
   ComponentLibraryVisFromStruct,
+  FoldersAndComponentsVis,
 } from "./pipeline-editor/src/DragNDrop/ComponentLibrary";
 import { notUndefined } from "./pipeline-editor/src/utils";
 
@@ -102,8 +103,8 @@ export const ComponentLibraryVSCode = ({
 }: {
   downloadData: DownloadDataType;
 }) => {
-  const [componentLibraryStruct, setComponentLibraryStruct] = useState<
-    ComponentLibraryStruct | undefined
+  const [componentLibrary, setComponentLibrary] = useState<
+    ComponentLibraryFolder | undefined
   >();
 
   useEffect(() => {
@@ -129,29 +130,46 @@ export const ComponentLibraryVSCode = ({
           // Removing the last part which is "component.yaml"
           pathParts.pop();
           // Removing the last directory part - each component.yaml is in separate directory
-          if (pathParts) {
+          // Leaving at least one path part (the workspace folder name)
+          if (pathParts.length > 1) {
             pathParts.pop();
           }
           addComponentToDeepFolder(rootFolder, componentRef, pathParts);
         }
       }
-      const libraryStructRootFolder = compactComponentLibrary(
-        sortComponentLibrary(rootFolder, "VS Code workspace components")
+      let libraryStructRootFolder = compactComponentLibrary(
+        sortComponentLibrary(rootFolder, "")
       );
-
-      const componentLibraryStruct: ComponentLibraryStruct = {
-        folders:
-          libraryStructRootFolder.components.length > 0
-            ? [libraryStructRootFolder]
-            : libraryStructRootFolder.folders,
-      };
-      setComponentLibraryStruct(componentLibraryStruct);
+      if (libraryStructRootFolder.components.length > 0) {
+        libraryStructRootFolder.name = libraryStructRootFolder.name.replace(
+          /^\//,
+          ""
+        );
+        libraryStructRootFolder = {
+          name: "",
+          folders: [libraryStructRootFolder],
+          components: [],
+        };
+      }
+      setComponentLibrary(libraryStructRootFolder);
     })();
-  }, [setComponentLibraryStruct]);
+  }, [setComponentLibrary]);
 
+  if (componentLibrary === undefined) {
+    return <>The library is being loaded...</>
+  }
+  if (componentLibrary.folders.length === 0) {
+    // TODO: Add link to the component creation guide.
+    // TODO: Add link to the ComponentSpec format reference.
+    return <>
+      No components found in the VSCode workspace.
+      Add <code>component.yaml</code> files.
+    </>;
+  }
   return (
-    <ComponentLibraryVisFromStruct
-      componentLibraryStruct={componentLibraryStruct}
+    <FoldersAndComponentsVis
+      folder={componentLibrary}
+      isOpen={true}
       downloadData={downloadData}
     />
   );
