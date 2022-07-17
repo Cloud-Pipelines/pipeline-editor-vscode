@@ -94,11 +94,25 @@ const Sidebar = ({
           Output
         </div>
       </details>
-      <ComponentLibrary
-        url={appSettings.componentLibraryUrl}
-        downloadData={downloadData}
-      />
-      <ComponentLibraryVSCode downloadData={downloadData}/>
+      <details open>
+        <summary style={{ border: "1px solid #aaa", borderRadius: "4px", padding: "4px" }}>
+          <strong>Component library</strong>
+        </summary>
+        <div style={{ paddingLeft: "10px" }}>
+          <ComponentLibrary
+            url={appSettings.componentLibraryUrl}
+            downloadData={downloadData}
+          />
+        </div>
+      </details>
+      <details open>
+        <summary style={{ border: "1px solid #aaa", borderRadius: "4px", padding: "4px" }}>
+          <strong>VS Code workspace components</strong>
+        </summary>
+        <div style={{ paddingLeft: "10px" }}>
+          <ComponentLibraryVSCode downloadData={downloadData}/>
+        </div>
+      </details>
       {/* <details style={{ border: "1px solid #aaa", borderRadius: "4px", padding: "4px" }}>
         <summary style={{ borderWidth: "1px", padding: "4px", fontWeight: "bold" }}>User components</summary>
         <UserComponentLibrary/>
