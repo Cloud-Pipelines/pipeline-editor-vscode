@@ -70,6 +70,15 @@
           },
           {
             "filenamePattern": "{*.,}pipeline_component.{yaml,yml,yaml.yml}"
+          },
+          {
+            "filenamePattern": "cloud_pipeline.{yaml,yml,yaml.yml}"
+          },
+          {
+            "filenamePattern": "*.cloud_pipeline.{yaml,yml,yaml.yml}"
+          },
+          {
+            "filenamePattern": "*.cloud_pipeline"
           }
         ]
       }
