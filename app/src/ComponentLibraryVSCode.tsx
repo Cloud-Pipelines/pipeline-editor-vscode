@@ -67,7 +67,11 @@ function sortComponentLibrary(
         key1.localeCompare(key2, undefined, { sensitivity: "base" })
       )
       .map(([key, value]) => sortComponentLibrary(value, key)),
-    components: Array.from(folder.components.values()).sort(),
+    components: Array.from(folder.components.values()).sort((ref1, ref2) =>
+      (ref1.name || "").localeCompare(ref2.name || "", undefined, {
+        sensitivity: "base",
+      })
+    ),
   };
 }
 
