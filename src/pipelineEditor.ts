@@ -445,9 +445,14 @@ async function getWorkspaceComponentFileAsComponentRef(uri: string) {
   //TODO: ! Check that this is a valid component file
   //TODO: Add digest
   //TODO: Try to get the GIT URI (and check whether the file is dirty)
+  // Make the component names/paths shorter and more readable by using the workspace folder names instead of full URIs.
+  let componentName = uri;
+  for (const folder of vscode.workspace.workspaceFolders || []) {
+    componentName = componentName.replace(folder.uri.toString(), folder.name);
+  }
   const componentRef = {
     // We should not set the component reference url to the uri since the URI is local
-    name: uri,
+    name: componentName,
     text: text,
   };
   return componentRef;
