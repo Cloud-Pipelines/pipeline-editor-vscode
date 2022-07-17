@@ -6,12 +6,15 @@
  * @copyright 2022 Alexey Volkov <alexey.volkov+oss@ark-kun.com>
  */
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useStoreState } from "react-flow-renderer";
 import { downloadDataWithVSCodeCache } from "./cacheUtilsVSCode";
 import { DownloadDataType } from "./pipeline-editor/src/cacheUtils";
 
-import { ComponentSpec, isGraphImplementation } from "./pipeline-editor/src/componentSpec";
+import {
+  ComponentSpec,
+  isGraphImplementation,
+} from "./pipeline-editor/src/componentSpec";
 import {
   componentSpecToYaml,
   loadComponentAsRefFromText,
