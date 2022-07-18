@@ -60,7 +60,7 @@ class MemoryKeyValueStore<TKey, TValue>
   }
 }
 
-async function callVSCodeRpc(func: string, ...args: any[]): Promise<any> {
+export async function callVSCodeRpc(func: string, ...args: any[]): Promise<any> {
   // @ts-ignore
   const vscodeApi = window.vscodeApi;
 

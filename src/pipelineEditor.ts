@@ -352,6 +352,10 @@ async function callRpc(
     case "VSCodeWorkspaceComponents:listUris": {
       return await listWorkspaceComponentFileUris();
     }
+    case "promptSaveFileAsWithContent": {
+      const [content, fileName] = args as [string, string];
+      return await promptSaveFileAsWithContent(content, fileName);
+    }
     default:
       return null;
   }
@@ -462,4 +466,21 @@ async function listWorkspaceComponentFileUris() {
   const uris = await vscode.workspace.findFiles("**/component.yaml");
   // TODO: Validate the component files
   return uris.map((uri) => uri.toString());
+}
+
+async function promptSaveFileAsWithContent(content: string, fileName: string) {
+  // TODO: Support proposed save file path which is the opened file plus suffix.
+  const proposedSaveDirUri =
+    vscode.workspace.workspaceFolders !== undefined &&
+    vscode.workspace.workspaceFolders.length > 0
+      ? vscode.workspace.workspaceFolders[0].uri
+      : vscode.Uri.parse("");
+  const proposedSaveUri = vscode.Uri.joinPath(proposedSaveDirUri, fileName);
+  const selectedSaveFileUri = await vscode.window.showSaveDialog({
+    defaultUri: proposedSaveUri,
+  });
+  if (selectedSaveFileUri !== undefined) {
+    const data = new TextEncoder().encode(content);
+    vscode.workspace.fs.writeFile(selectedSaveFileUri, data);
+  }
 }
