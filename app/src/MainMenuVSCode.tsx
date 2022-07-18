@@ -16,8 +16,10 @@ import {
   MenuItem,
   MenuList,
 } from "@material-ui/core";
+import yaml from "js-yaml";
 import { useCallback, useState } from "react";
 import { callVSCodeRpc } from "./cacheUtilsVSCode";
+import { buildArgoWorkflowFromGraphComponent } from "./pipeline-editor/src/compilers/Argo/argoCompiler";
 import { buildVertexPipelineJobFromGraphComponent } from "./pipeline-editor/src/compilers/GoogleCloudVertexAIPipelines/vertexAiCompiler";
 import { ComponentSpec } from "./pipeline-editor/src/componentSpec";
 
@@ -35,6 +37,25 @@ const compilePipelineToGoogleCloudVertexPipelineJob = (
   };
   const vertexPipelineJobJson = JSON.stringify(vertexPipelineJob, undefined, 2);
   return vertexPipelineJobJson;
+};
+
+const compilePipelineToArgoWorkflow = (
+  componentSpec: ComponentSpec
+): string => {
+  const argoWorkflow = buildArgoWorkflowFromGraphComponent(
+    componentSpec,
+    new Map()
+  );
+  argoWorkflow.metadata.labels = {
+    sdk: "cloud-pipelines-editor",
+    "cloud-pipelines.net/pipeline-editor": "true",
+    "pipelines.kubeflow.org/pipeline-sdk-type": "cloud-pipelines-editor",
+  };
+  const argoWorkflowYaml = yaml.dump(argoWorkflow, {
+    lineWidth: -1, // Don't fold long strings
+    quotingType: '"',
+  });
+  return argoWorkflowYaml;
 };
 
 export const MainMenu = ({
@@ -81,6 +102,28 @@ export const MainMenu = ({
     handleClose();
   }, [componentSpec, handleClose]);
 
+  const handleExportAsKubeflowPipeline = useCallback(() => {
+    if (componentSpec !== undefined) {
+      try {
+        const compiledPipelineText =
+            compilePipelineToArgoWorkflow(componentSpec);
+        const pipelineFileName = "kubeflow_pipeline.yaml";
+        callVSCodeRpc(
+          "promptSaveFileAsWithContent",
+          compiledPipelineText,
+          pipelineFileName
+        );
+      } catch (err) {
+        const errorMessage =
+          typeof err === "object" && err instanceof Error
+            ? err.toString()
+            : String(err);
+        setCompilationErrorMessage(errorMessage);
+      }
+    }
+    handleClose();
+  }, [componentSpec, handleClose]);
+
   return (
     <div>
       <Button
@@ -94,6 +137,9 @@ export const MainMenu = ({
         <MenuList dense>
           <MenuItem onClick={handleExportAsGoogleCloudVertexPipeline}>
             Export as Google Cloud Vertex PipelineJob
+          </MenuItem>
+          <MenuItem onClick={handleExportAsKubeflowPipeline}>
+            Export as Kubeflow Pipeline
           </MenuItem>
           {/* <MenuItem>About Cloud Pipelines</MenuItem> */}
           {/* <MenuItem>Give feedback</MenuItem> */}
