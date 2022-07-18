@@ -6,18 +6,11 @@
  * @copyright 2021 Alexey Volkov <alexey.volkov+oss@ark-kun.com>
  */
 
-import { DragEvent, useState } from 'react';
+import { DragEvent } from 'react';
 
 import ComponentLibrary from './pipeline-editor/src/DragNDrop/ComponentLibrary'
-import ComponentSearch from './pipeline-editor/src/DragNDrop/ComponentSearch'
-import GraphComponentExporter from './pipeline-editor/src/DragNDrop/GraphComponentExporter'
-import VertexAiExporter from './pipeline-editor/src/DragNDrop/VertexAiExporter'
 import { ComponentSpec } from './pipeline-editor/src/componentSpec';
-import UserComponentLibrary from "./pipeline-editor/src/DragNDrop/UserComponentLibrary";
-import PipelineLibrary from "./pipeline-editor/src/DragNDrop/PipelineLibrary";
 import { AppSettings } from './pipeline-editor/src/appSettings';
-import PipelineSubmitter from "./pipeline-editor/src/DragNDrop/PipelineSubmitter";
-import AppSettingsDialog from './pipeline-editor/src/DragNDrop/AppSettingsDialog';
 import { DownloadDataType, downloadDataWithCache } from './pipeline-editor/src/cacheUtils';
 
 import "./pipeline-editor/src/DragNDrop/dnd.css";
@@ -48,42 +41,9 @@ const Sidebar = ({
   appSettings,
   downloadData = downloadDataWithCache
 }: SidebarProps) => {
-  const [isSettingsDialogOpen, setIsSettingsDialogOpen] = useState(false);
-
-  // Do not include the DebugScratch in the production build
-  let DebugScratchElement = () => null;
-  /*
-  if (process?.env?.NODE_ENV === "development") {
-    try {
-      const DebugScratch = require("./DebugScratch").default;
-      DebugScratchElement = () =>
-        DebugScratch({
-          componentSpec: componentSpec,
-          setComponentSpec: setComponentSpec,
-          downloadData: downloadData,
-        });
-    } catch (e) {}
-  }
-  */
 
   return (
     <aside className="nodeList">
-      {/* <details style={{ border: "1px solid #aaa", borderRadius: "4px", padding: "4px" }}>
-        <summary style={{ borderWidth: "1px", padding: "4px", fontWeight: "bold" }}>Save/Load pipeline</summary>
-        <PipelineLibrary
-          componentSpec={componentSpec}
-          setComponentSpec={setComponentSpec}
-          samplePipelineLibraryUrl={appSettings.pipelineLibraryUrl}
-          downloadData={downloadData}
-        />
-      </details>
-      <details style={{ border: "1px solid #aaa", borderRadius: "4px", padding: "4px" }}>
-        <summary style={{ borderWidth: "1px", padding: "4px", fontWeight: "bold" }}>Run pipeline</summary>
-        <PipelineSubmitter
-          componentSpec={componentSpec}
-          googleCloudOAuthClientId={appSettings.googleCloudOAuthClientId}
-        />
-      </details> */}
       <h3>Drag components to the canvas:</h3>
       <details style={{ border: "1px solid #aaa", borderRadius: "4px", padding: "4px" }}>
         <summary><strong>Special</strong></summary>
@@ -113,40 +73,6 @@ const Sidebar = ({
           <ComponentLibraryVSCode downloadData={downloadData}/>
         </div>
       </details>
-      {/* <details style={{ border: "1px solid #aaa", borderRadius: "4px", padding: "4px" }}>
-        <summary style={{ borderWidth: "1px", padding: "4px", fontWeight: "bold" }}>User components</summary>
-        <UserComponentLibrary/>
-      </details> */}
-      {/* <details open style={{ border: "1px solid #aaa", borderRadius: "4px", padding: "4px" }}>
-        <summary style={{ borderWidth: "1px", padding: "4px", fontWeight: "bold" }}>Component search</summary>
-        <ComponentSearch
-          componentFeedUrls={appSettings.componentFeedUrls}
-          gitHubSearchLocations={appSettings.gitHubSearchLocations}
-          downloadData={downloadData}
-        />
-      </details> */}
-      {/* Unmounting the dialog control to reset the state when closed. */}
-      {/* {isSettingsDialogOpen && (
-        <AppSettingsDialog
-          isOpen={isSettingsDialogOpen}
-          handleClose={() => {
-            setIsSettingsDialogOpen(false);
-          }}
-        />
-      )} */}
-      {/* <details>
-        <summary>Debug and developer tools</summary>
-        <button
-          onClick={(e) => {
-            setIsSettingsDialogOpen(true);
-          }}
-        >
-          Settings
-        </button>
-        {componentSpec && <GraphComponentExporter componentSpec={componentSpec}/>}
-        {componentSpec && <VertexAiExporter componentSpec={componentSpec}/>}
-        <DebugScratchElement/>
-      </details> */}
     </aside>
   );
 };
