@@ -15,6 +15,7 @@ import { DownloadDataType, downloadDataWithCache } from './pipeline-editor/src/c
 
 import "./pipeline-editor/src/DragNDrop/dnd.css";
 import { ComponentLibraryVSCode } from './ComponentLibraryVSCode';
+import { MainMenu } from './MainMenuVSCode';
 
 const onDragStart = (event: DragEvent, nodeData: object) => {
   event.dataTransfer.setData('application/reactflow', JSON.stringify(nodeData));
@@ -44,6 +45,7 @@ const Sidebar = ({
 
   return (
     <aside className="nodeList">
+      <MainMenu componentSpec={componentSpec}/>
       <h3>Drag components to the canvas:</h3>
       <details style={{ border: "1px solid #aaa", borderRadius: "4px", padding: "4px" }}>
         <summary><strong>Special</strong></summary>
