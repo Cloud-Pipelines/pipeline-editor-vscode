@@ -106,7 +106,7 @@ export const MainMenu = ({
     if (componentSpec !== undefined) {
       try {
         const compiledPipelineText =
-            compilePipelineToArgoWorkflow(componentSpec);
+          compilePipelineToArgoWorkflow(componentSpec);
         const pipelineFileName = "kubeflow_pipeline.yaml";
         callVSCodeRpc(
           "promptSaveFileAsWithContent",
@@ -123,6 +123,19 @@ export const MainMenu = ({
     }
     handleClose();
   }, [componentSpec, handleClose]);
+
+  const handleAbout = useCallback(() => {
+    callVSCodeRpc("vscode.env.openExternal", "https://cloud-pipelines.net/");
+    handleClose();
+  }, [handleClose]);
+
+  const handleFeedback = useCallback(() => {
+    callVSCodeRpc(
+      "vscode.env.openExternal",
+      "https://github.com/Cloud-Pipelines/pipeline-editor/issues"
+    );
+    handleClose();
+  }, [handleClose]);
 
   return (
     <div>
@@ -141,8 +154,8 @@ export const MainMenu = ({
           <MenuItem onClick={handleExportAsKubeflowPipeline}>
             Export as Kubeflow Pipeline
           </MenuItem>
-          {/* <MenuItem>About Cloud Pipelines</MenuItem> */}
-          {/* <MenuItem>Give feedback</MenuItem> */}
+          <MenuItem onClick={handleFeedback}>Feedback</MenuItem>
+          <MenuItem onClick={handleAbout}>About</MenuItem>
         </MenuList>
       </Menu>
       <Dialog open={compilationErrorMessage !== undefined}>

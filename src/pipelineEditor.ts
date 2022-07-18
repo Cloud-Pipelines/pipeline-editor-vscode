@@ -356,6 +356,10 @@ async function callRpc(
       const [content, fileName] = args as [string, string];
       return await promptSaveFileAsWithContent(content, fileName);
     }
+    case "vscode.env.openExternal": {
+      const [uri] = args as [string];
+      return await vscode.env.openExternal(vscode.Uri.parse(uri));
+    }
     default:
       return null;
   }
