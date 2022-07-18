@@ -15,8 +15,6 @@ import {
 import { ComponentReference } from "./pipeline-editor/src/componentSpec";
 import {
   ComponentLibraryFolder,
-  ComponentLibraryStruct,
-  ComponentLibraryVisFromStruct,
   FoldersAndComponentsVis,
 } from "./pipeline-editor/src/DragNDrop/ComponentLibrary";
 import { notUndefined } from "./pipeline-editor/src/utils";
