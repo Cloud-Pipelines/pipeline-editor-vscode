@@ -109,11 +109,11 @@ class VSCodeRpcGlobalKeyValueDataStore
       return result;
     }
     console.error(
-      "VSCodeRpcGlobalKeyValueDataStore: Expected result to be ArrayBuffer or undefined, but got",
+      `VSCodeRpcGlobalKeyValueDataStore: Error when getting data for ${key}. Expected the result to be ArrayBuffer or undefined, but got`,
       result
     );
     return Promise.reject(
-      `Expected result to be ArrayBuffer or undefined, but got ${result}.`
+      `Error when getting data for ${key}. Expected the result to be ArrayBuffer or undefined, but got ${result}.`
     );
   }
   async set(key: string, value: ArrayBuffer) {
