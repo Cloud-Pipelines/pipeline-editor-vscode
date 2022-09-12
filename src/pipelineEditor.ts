@@ -345,6 +345,9 @@ async function callRpc(
       const [cacheName] = args as [string];
       return await storageCacheListKeys(context.globalStorageUri, cacheName);
     }
+    case "CloudPipelinesConfiguration:get": {
+      return vscodeGetCloudPipelinesConfiguration();
+    }
     case "VSCodeWorkspaceComponents:getComponentRefByUri": {
       const [uri] = args as [string];
       return await getWorkspaceComponentFileAsComponentRef(uri);
@@ -445,6 +448,10 @@ async function storageCacheListKeys(
     })
   );
   return keys;
+}
+
+async function vscodeGetCloudPipelinesConfiguration(): Promise<object> {
+  return vscode.workspace.getConfiguration("cloudPipelines");
 }
 
 async function getWorkspaceComponentFileAsComponentRef(uri: string) {

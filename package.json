@@ -82,7 +82,21 @@
           }
         ]
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Cloud Pipelines",
+      "properties": {
+        "cloudPipelines.componentLibrary.libraryUrls": {
+          "type": "object",
+          "scope": "resource",
+          "default": {
+            "main": "https://cloud-pipelines.net/pipeline-editor/component_library.yaml"
+          },
+          "additionalProperties": { "type": "string" },
+          "description": "Component library file URLs"
+        }
+      }
+    }
   },
   "scripts": {
     "build-react-app": "cd ./app/ && cross-env-shell PUBLIC_URL=./ BUILD_PATH=$INIT_CWD/build INLINE_RUNTIME_CHUNK=false npm run build",

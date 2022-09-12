@@ -27,14 +27,14 @@ import GraphComponentSpecFlow, {
 } from "./pipeline-editor/src/DragNDrop/GraphComponentSpecFlow";
 // import Sidebar from './Sidebar';
 import Sidebar from './SidebarVSCode';
-import { getAppSettings } from './appSettingsVSCode';
+import { AppSettings } from './appSettingsVSCode';
 // import { loadComponentFromUrl } from "./samplePipelines";
 
 import "./pipeline-editor/src/DragNDrop/dnd.css";
 //import { CompareArrowsOutlined } from "@material-ui/icons";
 // import { preloadComponentReferences } from "./samplePipelines";
 import VSCodeDocumentConnector from "./VSCodeDocumentConnector";
-import { downloadDataWithVSCodeCache } from "./cacheUtilsVSCode";
+import { callVSCodeRpc, downloadDataWithVSCodeCache } from "./cacheUtilsVSCode";
 
 const GRID_SIZE = 10;
 // const SAVED_COMPONENT_SPEC_KEY = "autosaved.component.yaml";
@@ -138,12 +138,40 @@ const DnDFlow = () => {
   const [componentSpec, setComponentSpec] = useState<
     ComponentSpec | undefined
   >();
+  const [appSettings, setAppSettings] = useState<
+    AppSettings | undefined
+  >();
   console.debug("DnDFlow. Render");
   useEffect(() => {
     console.debug("DnDFlow. First time render");
   }, []);
 
   const downloadData = downloadDataWithVSCodeCache;
+
+  useEffect(() => {
+    (async () => {
+      //const appSettings = getAppSettings();
+      const configuration = await callVSCodeRpc(
+        "CloudPipelinesConfiguration:get"
+      );
+      // TODO: Validate configuration against JsonSchema
+      const componentLibraryUrls: Record<string, string> | undefined =
+        configuration.componentLibrary?.libraryUrls;
+      if (componentLibraryUrls === undefined) {
+        return;
+      }
+      const componentLibraryUrl = Object.values(componentLibraryUrls)[0];
+      const appSettings: AppSettings = {
+        componentLibraryUrl: componentLibraryUrl,
+        componentFeedUrls: [],
+        defaultPipelineUrl: "",
+        gitHubSearchLocations: [],
+        googleCloudOAuthClientId: "",
+        pipelineLibraryUrl: "",
+      };
+      setAppSettings(appSettings);
+    })();
+  }, []);
 
   return (
     <div className="dndflow" style={{backgroundColor: "white", color: "black"}}>
@@ -174,12 +202,14 @@ const DnDFlow = () => {
           />
           {/* <ReactBugTest/> */}
         </div>
-        <Sidebar
-          componentSpec={componentSpec}
-          setComponentSpec={setComponentSpec}
-          appSettings={getAppSettings()}
-          downloadData={downloadData}
-        />
+        {appSettings && (
+          <Sidebar
+            componentSpec={componentSpec}
+            setComponentSpec={setComponentSpec}
+            appSettings={appSettings}
+            downloadData={downloadData}
+          />
+        )}
         {/* <ComponentSpecAutoSaver componentSpec={componentSpec}/> */}
       </ReactFlowProvider>
     </div>
