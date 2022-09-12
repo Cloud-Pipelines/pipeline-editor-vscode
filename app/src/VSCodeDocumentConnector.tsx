@@ -83,25 +83,22 @@ const VSCodeDocumentConnector = ({
             throw TypeError(`Message data type should be string. msg=${msg}`);
           }
           try {
-            const fullyLoadedPipelineSpec =
+            const pipelineSpec =
               componentText === ""
                 ? // Handling the case where the editor is (explicitly) applied to an empty file.
                   // Handing this case by loading an empty pipeline.
                   createEmptyPipelineSpec()
-                : await preloadComponentReferences(
-                    (
-                      await loadComponentAsRefFromText(componentText)
-                    ).spec,
-                    downloadData
-                  );
+                : (await loadComponentAsRefFromText(componentText)).spec;
             // Only accepting graph components
-            if (
-              !isGraphImplementation(fullyLoadedPipelineSpec.implementation)
-            ) {
+            if (!isGraphImplementation(pipelineSpec.implementation)) {
               throw Error(
                 "Provided ComponentSpec is not a pipeline (the implementation is not a graph)."
               );
             }
+            const fullyLoadedPipelineSpec = await preloadComponentReferences(
+              pipelineSpec,
+              downloadData
+            );
             // The message only arrives once when the document is opened.
             // But the WebView panel is reopened every time it gains focus.
             // So we need to save the document text to VSCode state to preserve it.
